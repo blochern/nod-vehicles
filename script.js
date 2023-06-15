@@ -4,24 +4,27 @@ const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 
-const sql = postgres(process.env.DATABASE_URL);
+const { Pool } = require('pg');
 
-app.use(express.static("public"));
+const port = process.env.PORT;
+const databaseString = process.env.DATABASE_URL;
+
+const pool = new Pool ({
+    connectionString: databaseString
+});
+
+app.use(express.static('public'));
 
 // get all
-app.get("/vehicles", (req, res) => {
-    sql`SELECT * FROM vehicles;`.then((data) => {
-        res.json(data);
-    });
+app.get("/vehicles", async (req, res) => {
+    try {
+        const results = await pool.query("SELECT * FROM VEHICLES;");
+        res.json(results.rows); return;
+    }
+    catch (err) {
+        res.status(500).send("Internal Server Error");
+    }
 });
 
-// get one
-app.get("/vehicles/:id", (req, res) => {
-    const { id } = req.params;
-    sql`SELECT * FROM vehicles WHERE id = ${id}`.then((data) => {
-        res.json(data)
-    });
-});
-
-// listener port 3001
-app.listen(process.env.PORT, () => { console.log("Server is running... listening on port ", process.env.PORT) });
+// listener
+app.listen(port, () => { console.log("Server is running... listening on port ", port) });
