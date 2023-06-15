@@ -1,9 +1,3 @@
-DROP DATABASE IF EXISTS nod_vehicles_test;
-
-CREATE DATABASE nod_vehicles_test;
-
-\c nod_vehicles_test;
-
 CREATE TABLE vehicles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
