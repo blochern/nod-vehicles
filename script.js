@@ -18,7 +18,7 @@ app.use(express.static('public'));
 // get all
 app.get("/vehicles", async (req, res) => {
     try {
-        const results = await pool.query("SELECT * FROM VEHICLES;");
+        const results = await pool.query("SELECT * FROM vehicles;");
         res.json(results.rows); return;
     }
     catch (err) {
